@@ -1,0 +1,42 @@
+version: '3'
+services:
+  db:
+    image: mysql/mysql-server:8.0.3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mynewpassword
+      MYSQL_DATABASE: management_students_scores
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mynewpassword
+    ports:
+      - "3306"
+    expose:
+      - "3306"
+    command: --default-authentication-plugin=mysql_native_password
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+  app:
+    build: .
+    command: sh -c "bundle exec rake rails:migrate && bundle exec rails s -p 3000 -b '0.0.0.0"
+    volumes:
+      - ".:/app"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      DB_USER: root
+      DB_NAME: management_students_scores
+      DB_PASSWORD: mynewpassword
+      DB_HOST: db
+
+
+  front:
+    build: ./frontend
+    ports:
+      - "8080:8080" # use port that you want to in your local instead of 8091
+    volumes:
+      - .:/usr/src/frontend
+      - /usr/src/frontend/node_modules

@@ -51,3 +51,8 @@ gem 'rubocop', require: false
 gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.11.0"
 gem "rack-cors", "~> 2.0"
+
+group :development do
+  gem "better_errors"
+  gem "binding_of_caller"
+end
